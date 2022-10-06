@@ -1,0 +1,37 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1 class="title pt-5">{{header}}</h1>
+
+<form class="mb-5" method="get">
+  <div class="field has-addons">
+    <div class="control">
+      <!--  Our input will search by name of gem  -->
+      <input class="input" type="text" name="name" placeholder="name" />
+    </div>
+    <div class="control">
+      <input class="button is-success" type="submit" value="Search" />
+    </div>
+  </div>
+  <!--  This anchor tag will redirect back to gem list without a query param -->
+  <a class="button is-dark" href="{% url 'gem_list' %}">Clear Search</a>
+  <a class="button is-dark" href="{% url 'gem_create' %}">Add Gem</a>
+</form>
+<div class="gallery">
+    {% for gem in gems %}
+    <!-- Here we are changing the href of the a tag to use the url DTL -->
+      <a href="{% url 'gem_detail' gem.pk %}">
+        <div class="card">
+          <div class="card-image">
+            <figure class="image is-square">
+              <img src="{{gem.img}}" alt="{{gem.name}}" />
+            </figure>
+          </div>
+          <div class="card-header">
+            <p class="card-header-title">{{gem.name}}</p>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+</div>
+
+{% endblock %}

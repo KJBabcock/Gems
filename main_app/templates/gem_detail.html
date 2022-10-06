@@ -1,0 +1,120 @@
+{% extends 'base.html' %} 
+{% block content %}
+<div class="detail__img">
+  <img src="{{gem.img}}" alt="{{gem.name}}" />
+</div>
+<div class="detail__name">
+  {% if gem.verified_gem %}
+  <div class="icon-text">
+    <span class="icon has-text-info">
+      <i class="fas fa-check-circle"></i>
+    </span>
+    <span>Verified</span>
+  </div>
+  {% endif %}
+  <h1 class="title">{{gem.name}}</h1>
+</div>
+    <div class="detail__container">
+        <!-- inside container -->
+    <div class="detail__attributes mb-5">
+
+        <h3 class="title is-3">attributes</h3>
+        {% for attribute in gem.attributes.all %}
+        <div class="attribute">
+        <span>{{forloop.counter}}</span>
+        <span><b>{{attribute.title}}</b></span>
+        <span>{{attribute.get_length}}</span>
+        </div>
+        <span>
+          <div class="dropdown">
+            <div class="dropdown-trigger">
+              <button
+                class="button"
+                aria-haspopup="true"
+                aria-controls="dropdown-menu"
+              >
+                <span>Add to Chain</span>
+                <span class="icon is-small">
+                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                </span>
+              </button>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+              <div class="dropdown-content">
+                {% for chain in chains %}
+            <!-- each chain becomes a drop
+            down item with the ids needed to add to the join table  -->
+                <a
+                  href="{% url 'chain_attribute_assoc' chain.pk attribute.pk %}?assoc=add"
+                  class="dropdown-item"
+                >
+                  {{chain.title}}
+                </a>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </span>
+
+        {% empty %}
+            <article class="message">
+                <div class="message-header">
+                    <p>No attributes Available</p>
+                </div>
+            </article>
+
+        {% endfor %}
+    </div>
+    <!-- inside detail attributes element below the header -->
+
+<!-- Here you can see the action we provided
+     is to the attribute_create route with the gem pk -->
+    <form class="mb-5" action="{% url 'attribute_create' gem.pk %}" method="post">
+        {% csrf_token %}
+        <div class="field has-addons">
+        <div class="control">
+            <input
+            class="input"
+            type="text"
+            name="title"
+            placeholder="Title"
+            required
+            />
+        </div>
+        <div class="control">
+            <input
+            class="input"
+            type="number"
+            name="length"
+            placeholder="Length in Seconds"
+            min="1"
+            required
+            />
+        </div>
+        <div class="control">
+            <input class="button is-primary" type="submit" value="Add Attribute" />
+        </div>
+        </div>
+    </form>
+
+<!-- before the for loop for attributes -->
+
+    <!--  above about section  -->
+    <a href="{% url 'gem_update' gem.pk %}" class="button is-info">
+        <span class="icon">
+          <i class="fas fa-edit"></i>
+        </span>
+      </a>
+    <a href="{% url 'gem_delete' gem.pk %}" class="button is-danger">
+      <span class="icon">
+        <i class="fas fa-trash-alt"></i>
+      </span>
+    </a>
+  </div>
+  <div class="detail__about">
+    <h4 class="title is-4">About</h4>
+    <p>{{gem.bio}}</p>
+  </div>
+</div>
+
+{% endblock %}
